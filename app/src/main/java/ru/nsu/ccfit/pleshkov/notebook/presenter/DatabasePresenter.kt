@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase
 import kotlinx.coroutines.experimental.Job
 import ru.nsu.ccfit.pleshkov.notebook.model.*
 import ru.nsu.ccfit.pleshkov.notebook.view.JobHolder
-import java.util.*
 
 class DatabasePresenter : JobHolder {
     override val job = Job()
@@ -41,9 +40,7 @@ class DatabasePresenter : JobHolder {
             timeToDo: Long? = null,
             status: NoteStatus? = null,
             changedByUser: Boolean? = null
-    ) = jobAsync {
-        writableDb.insertNote(title, text, timeToDo, status, changedByUser)
-    }
+    ) = jobAsync { writableDb.insertNote(title, text, timeToDo, status, changedByUser) }
 
     fun editNote(
             id: Int,

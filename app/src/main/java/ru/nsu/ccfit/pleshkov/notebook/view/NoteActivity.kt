@@ -2,7 +2,6 @@ package ru.nsu.ccfit.pleshkov.notebook.view
 
 import android.app.DatePickerDialog
 import android.app.Dialog
-import android.content.ContentValues
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -84,9 +83,10 @@ class ChangeStatusDialog : AppCompatDialogFragment() {
                 .setPositiveButton(R.string.change) { dialog, id ->
                     noteActivity.status = NoteStatus.getByPosition(position)
                     noteActivity.noteStatus.text = noteActivity.status.toString()
+                    noteActivity.noteStatus.setTextColor(noteActivity.status.color)
                     noteActivity.changedByUser = true
                 }
-                .setNegativeButton(R.string.cancel) { _, _ ->}
+                .setNegativeButton(R.string.cancel) { _, _ -> }
                 .setSingleChoiceItems(R.array.status_names, position) { _, idSelected ->
                     position = idSelected
                 }

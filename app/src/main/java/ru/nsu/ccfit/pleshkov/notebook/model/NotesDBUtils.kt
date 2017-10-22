@@ -3,7 +3,6 @@ package ru.nsu.ccfit.pleshkov.notebook.model
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import ru.nsu.ccfit.pleshkov.notebook.view.EditNoteActivity
 import java.util.*
 
 fun Cursor.getNote() = Note(
@@ -62,7 +61,7 @@ suspend fun SQLiteDatabase.editNote(
     this.update(NotesDBContract.TABLE_NAME, values, selection, arrayOf("$id"))
 }
 
-suspend fun SQLiteDatabase.getNote(noteId: Int) : Note {
+suspend fun SQLiteDatabase.getNote(noteId: Int): Note {
     val projection = arrayOf(
             NotesDBContract._ID,
             NotesDBContract.COLUMN_NAME_TITLE,
@@ -119,13 +118,13 @@ fun contentValues(
         changedByUser: Boolean? = null
 ): ContentValues {
     val values = ContentValues()
-    if(title != null) values.put(NotesDBContract.COLUMN_NAME_TITLE, title)
-    if(text != null) values.put(NotesDBContract.COLUMN_NAME_TEXT, text)
-    if(timeCreated != null)values.put(NotesDBContract.COLUMN_NAME_TIME_CREATED, timeCreated)
-    if(timeToDo != null) values.put(NotesDBContract.COLUMN_NAME_TIME_TO_DO, timeToDo)
+    if (title != null) values.put(NotesDBContract.COLUMN_NAME_TITLE, title)
+    if (text != null) values.put(NotesDBContract.COLUMN_NAME_TEXT, text)
+    if (timeCreated != null) values.put(NotesDBContract.COLUMN_NAME_TIME_CREATED, timeCreated)
+    if (timeToDo != null) values.put(NotesDBContract.COLUMN_NAME_TIME_TO_DO, timeToDo)
     values.put(NotesDBContract.COLUMN_NAME_TIME_UPDATED, Calendar.getInstance().timeInMillis)
-    if(status != null) values.put(NotesDBContract.COLUMN_NAME_STATUS, status.code)
-    if(changedByUser != null) values.put(NotesDBContract.COLUMN_NAME_SET_BY_USER, if (changedByUser) 1 else 0)
+    if (status != null) values.put(NotesDBContract.COLUMN_NAME_STATUS, status.code)
+    if (changedByUser != null) values.put(NotesDBContract.COLUMN_NAME_SET_BY_USER, if (changedByUser) 1 else 0)
     return values
 }
 

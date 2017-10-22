@@ -15,10 +15,10 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.experimental.android.UI
+import ru.nsu.ccfit.pleshkov.notebook.R
+import ru.nsu.ccfit.pleshkov.notebook.model.AllNotesDeleter
 import ru.nsu.ccfit.pleshkov.notebook.presenter.NoteDeleteCallback
 import ru.nsu.ccfit.pleshkov.notebook.presenter.NotesAdapter
-import ru.nsu.ccfit.pleshkov.notebook.R
-import ru.nsu.ccfit.pleshkov.notebook.model.*
 
 class MainActivity : BaseDatabaseActivity(), AllNotesDeleter, SearchView.OnQueryTextListener {
 
@@ -69,7 +69,7 @@ class MainActivity : BaseDatabaseActivity(), AllNotesDeleter, SearchView.OnQuery
         menuInflater.inflate(R.menu.menu_main, menu)
 
         val searchItem = menu.findItem(R.id.action_search)
-        if(searchItem != null) {
+        if (searchItem != null) {
             val searchView = searchItem.actionView as SearchView
             searchView.setOnQueryTextListener(this)
         }
@@ -90,7 +90,7 @@ class MainActivity : BaseDatabaseActivity(), AllNotesDeleter, SearchView.OnQuery
 
     override fun onQueryTextSubmit(query: String?) = false
 
-    override fun onQueryTextChange(query: String?) = if(query == null) false else {
+    override fun onQueryTextChange(query: String?) = if (query == null) false else {
         notesAdapter.showFiltered(query)
         true
     }
@@ -111,7 +111,7 @@ class DeleteAllNotesDialog : AppCompatDialogFragment() {
                 .setPositiveButton(R.string.delete_all_ok) { dialog, id ->
                     (activity as AllNotesDeleter).deleteAllNotes()
                 }
-                .setNegativeButton(R.string.delete_all_cancel) { _, _ ->}
+                .setNegativeButton(R.string.delete_all_cancel) { _, _ -> }
         return builder.create()
     }
 }

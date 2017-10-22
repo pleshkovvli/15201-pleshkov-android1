@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import kotlinx.android.synthetic.main.content_note.*
 import kotlinx.coroutines.experimental.android.UI
-import ru.nsu.ccfit.pleshkov.notebook.model.*
+import ru.nsu.ccfit.pleshkov.notebook.model.Note
 import ru.nsu.ccfit.pleshkov.notebook.presenter.niceFormattedTime
 
 class EditNoteActivity : NoteActivity() {
@@ -14,7 +14,7 @@ class EditNoteActivity : NoteActivity() {
     companion object {
         private const val KEY_ID = "NOTE_ID"
 
-        fun newIntent(context: Context, id: Int) : Intent {
+        fun newIntent(context: Context, id: Int): Intent {
             val intent = Intent(context, EditNoteActivity::class.java)
             intent.putExtra(KEY_ID, id)
             return intent
@@ -32,7 +32,7 @@ class EditNoteActivity : NoteActivity() {
             noteText.setText(oldNote.text)
 
             val timeToDo = oldNote.timeToDo
-            noteDeadline.text = if(timeToDo != -1L)
+            noteDeadline.text = if (timeToDo != -1L)
                 "Deadline is ${niceFormattedTime(timeToDo)}" else "No deadline"
 
             status = oldNote.status

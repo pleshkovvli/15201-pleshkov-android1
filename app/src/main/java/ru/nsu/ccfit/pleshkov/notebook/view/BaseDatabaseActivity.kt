@@ -1,12 +1,10 @@
 package ru.nsu.ccfit.pleshkov.notebook.view
 
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import kotlinx.coroutines.experimental.*
-import ru.nsu.ccfit.pleshkov.notebook.model.NotesDBHelper
 import ru.nsu.ccfit.pleshkov.notebook.presenter.DatabasePresenter
 import kotlin.coroutines.experimental.CoroutineContext
 

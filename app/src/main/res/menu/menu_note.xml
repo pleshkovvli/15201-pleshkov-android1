@@ -5,8 +5,8 @@
     <item
         android:id="@+id/note_status"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_alarm_white_24dp"
-        android:title="@string/action_settings"
+        android:icon="@drawable/ic_low_priority_white_24dp"
+        android:title="@string/menu_change_status"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/note_settings"

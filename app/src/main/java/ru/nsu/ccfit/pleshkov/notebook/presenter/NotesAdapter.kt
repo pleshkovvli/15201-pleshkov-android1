@@ -140,7 +140,7 @@ class NoteDeleteCallback(
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
         val position = viewHolder?.adapterPosition ?: return
         val note = notesAdapter.noteOnPosition(position)
-        if(note.status == NoteStatus.CANCELLED) {
+        if (note.status == NoteStatus.CANCELLED) {
             return
         }
 
