@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -22,33 +21,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <EditText
-        android:text=""
-        android:textStyle="bold"
-        android:hint="@string/header_hint"
-        android:background="@drawable/edit_text_background"
-        android:id="@+id/noteHeader"
-        android:textSize="@dimen/new_header_text_size"
-        android:padding="@dimen/new_header_padding"
-        android:layout_marginStart="@dimen/header_margin"
-        android:layout_marginLeft="@dimen/header_margin"
-        android:layout_marginEnd="@dimen/header_margin"
-        android:layout_marginRight="@dimen/header_margin"
-        android:layout_marginBottom="@dimen/header_margin"
+    <include layout="@layout/content_note" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/changeDeadline"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_alarm_white_24dp" />
 
-    <EditText
-        android:text=""
-        android:hint=""
-        android:gravity="top|start"
-        android:id="@+id/noteText"
-        android:textSize="@dimen/new_content_text_size"
-        android:layout_marginStart="@dimen/header_margin"
-        android:layout_marginLeft="@dimen/header_margin"
-        android:layout_marginEnd="@dimen/header_margin"
-        android:layout_marginRight="@dimen/header_margin"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

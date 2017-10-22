@@ -6,8 +6,9 @@
     <dimen name="header_text_size">24sp</dimen>
     <dimen name="header_size">32sp</dimen>
     <dimen name="content_text_size">16sp</dimen>
-    <dimen name="content_size">40sp</dimen>
+    <dimen name="content_size">60sp</dimen>
     <dimen name="new_header_text_size">24sp</dimen>
     <dimen name="new_content_text_size">20sp</dimen>
     <dimen name="date_width">48sp</dimen>
+    <dimen name="title_width">256sp</dimen>
 </resources>

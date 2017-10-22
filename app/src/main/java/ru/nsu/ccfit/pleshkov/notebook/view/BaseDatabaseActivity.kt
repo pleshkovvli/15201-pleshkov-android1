@@ -7,41 +7,37 @@ import android.os.Bundle
 import android.view.View
 import kotlinx.coroutines.experimental.*
 import ru.nsu.ccfit.pleshkov.notebook.model.NotesDBHelper
+import ru.nsu.ccfit.pleshkov.notebook.presenter.DatabasePresenter
 import kotlin.coroutines.experimental.CoroutineContext
 
 interface JobHolder {
     val job: Job
+
+    fun <T> jobAsync(
+            context: CoroutineContext = DefaultDispatcher,
+            start: CoroutineStart = CoroutineStart.DEFAULT,
+            block: suspend CoroutineScope.() -> T
+    ) = async(job + context, start, block)
 }
 
 val View.contextJob: Job get() = (context as? JobHolder)?.job ?: NonCancellable
 
 abstract class BaseDatabaseActivity : AppCompatActivity(), JobHolder {
-    protected abstract val LAYOUT_ID: Int
+    protected abstract val layoutId: Int
 
     override val job = Job()
 
-    protected lateinit var dbHelper: NotesDBHelper
-    protected lateinit var writableDb: SQLiteDatabase
-    protected lateinit var readableDb: SQLiteDatabase
+    protected val dbPresenter = DatabasePresenter()
 
     protected lateinit var initDatabaseTask: Deferred<Unit>
 
-    protected fun <T> jobAsync(
-            context: CoroutineContext = DefaultDispatcher,
-            start: CoroutineStart = CoroutineStart.DEFAULT,
-            block: suspend CoroutineScope.() -> T
-    ) = async(job + context, start, block)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(LAYOUT_ID)
+        setContentView(layoutId)
 
-        dbHelper = NotesDBHelper(this)
+        dbPresenter.begin(this)
 
-        initDatabaseTask = jobAsync {
-            writableDb = dbHelper.writableDatabase
-            readableDb = dbHelper.readableDatabase
-        }
+        initDatabaseTask = dbPresenter.initDatabases()
     }
 
     protected fun startActivityAnimated(intent: Intent) {
@@ -51,7 +47,7 @@ abstract class BaseDatabaseActivity : AppCompatActivity(), JobHolder {
 
     override fun onDestroy() {
         job.cancel()
-        dbHelper.close()
+        dbPresenter.end()
         super.onDestroy()
     }
 }

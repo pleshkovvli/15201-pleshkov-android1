@@ -3,6 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ru.nsu.ccfit.pleshkov.notebook.view.MainActivity">
     <item
+        android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/menu_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
@@ -10,7 +17,6 @@
     <item
         android:id="@+id/delete_all_notes"
         android:orderInCategory="200"
-        android:icon="@drawable/ic_delete_forever_black_24dp"
-        android:title="@string/action_settings"
-        app:showAsAction="ifRoom" />
+        android:title="@string/delete_all_menu"
+        app:showAsAction="never" />
 </menu>
