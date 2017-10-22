@@ -1,16 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ru.nsu.ccfit.pleshkov.notebook.view.MainActivity">
+    tools:context="ru.nsu.ccfit.pleshkov.notebook.view.NoteActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/new_note_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
-        android:id="@+id/delete_all_notes"
+        android:id="@+id/new_note_save"
         android:orderInCategory="200"
-        android:icon="@drawable/ic_delete_forever_black_24dp"
+        android:icon="@drawable/ic_save_black_24dp"
         android:title="@string/action_settings"
         app:showAsAction="ifRoom" />
 </menu>
