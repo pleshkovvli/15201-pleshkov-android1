@@ -9,6 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <receiver
+            android:name=".services.DeadlineReceiver"
+            android:enabled="true"
+            android:exported="false" >
+        </receiver>
+        <service
+            android:name=".services.DeadlineService"
+            android:exported="false" >
+        </service>
         <activity
             android:name=".view.MainActivity"
             android:label="@string/app_name"

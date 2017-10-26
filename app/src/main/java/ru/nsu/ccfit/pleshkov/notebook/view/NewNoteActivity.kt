@@ -21,7 +21,7 @@ class NewNoteActivity : NoteActivity() {
         fun newIntent(context: Context) = Intent(context, NewNoteActivity::class.java)
     }
 
-    override fun writeChangesToDatabase(title: String, text: String, timeToDo: Long) {
-        dbPresenter.addNote(title, text, timeToDo, status, changedByUser)
+    override fun writeChangesToDatabase(title: String, text: String, timeToDo: Long) = jobAsync {
+        dbPresenter.addNote(title, text, timeToDo, status, changedByUser).await()
     }
 }

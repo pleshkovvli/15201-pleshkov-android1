@@ -24,16 +24,27 @@ data class Note(
     )
 }
 
-enum class NoteStatus(val code: Int, val position: Int, val color: Int) {
-    URGENT(10, 0, Color.argb(255, 220, 30, 30)),
-    PRIMARY(11, 1, Color.argb(255, 180, 30, 30)),
-    USUAL(12, 2, Color.argb(255, 200, 200, 40)),
-    SOMEDAY(13, 3, Color.argb(255, 130, 130, 230)),
-    UNNECESSARY(14, 4, Color.argb(255, 40, 30, 240)),
-    DONE(20, 5, Color.argb(255, 10, 250, 40)),
-    FAILED(31, 6, Color.argb(255, 250, 10, 10)),
-    CANCELLED(32, 7, Color.argb(200, 100, 120, 130)),
-    UNKNOWN(40, 8, Color.argb(150, 40, 40, 0));
+const val URGENT_TIME_MS: Long = 20000L//24 * 60 * 60 * 1000
+const val PRIMARY_TIME_MS: Long = 60000L//48L * 60 * 60 * 1000
+const val USUAL_TIME_MS: Long = 80000L//100L * 60 * 60 * 1000
+const val SOMEDAY_TIME_MS: Long = 121000L//30L * 24 * 60 * 60 * 1000
+
+enum class NoteStatus(
+        val code: Int,
+        val position: Int,
+        val color: Int,
+        val nextCode: Int,
+        val timeToNext: Long) {
+
+    URGENT(10, 0, Color.argb(255, 220, 30, 30), 31, URGENT_TIME_MS),
+    PRIMARY(11, 1, Color.argb(255, 180, 30, 30), 10, PRIMARY_TIME_MS - URGENT_TIME_MS),
+    USUAL(12, 2, Color.argb(255, 200, 200, 40), 11, USUAL_TIME_MS - PRIMARY_TIME_MS),
+    SOMEDAY(13, 3, Color.argb(255, 130, 130, 230), 12, SOMEDAY_TIME_MS - PRIMARY_TIME_MS),
+    UNNECESSARY(14, 4, Color.argb(255, 40, 30, 240), 13, 0),
+    DONE(20, 5, Color.argb(255, 10, 250, 40), 40, 0),
+    FAILED(31, 6, Color.argb(255, 250, 10, 10), 40, 0),
+    CANCELLED(32, 7, Color.argb(200, 100, 120, 130), 40, 0),
+    UNKNOWN(40, 8, Color.argb(150, 40, 40, 0), 40, 0);
 
     companion object {
         fun getByCode(code: Int) = when (code) {
@@ -59,5 +70,16 @@ enum class NoteStatus(val code: Int, val position: Int, val color: Int) {
             7 -> CANCELLED
             else -> UNKNOWN
         }
+
+        fun getByTimeToDo(time: Long) = when {
+            time < 0 -> UNKNOWN
+            time < URGENT_TIME_MS -> URGENT
+            time < PRIMARY_TIME_MS -> PRIMARY
+            time < USUAL_TIME_MS -> USUAL
+            time < SOMEDAY_TIME_MS -> SOMEDAY
+            else -> UNNECESSARY
+        }
+
+
     }
 }

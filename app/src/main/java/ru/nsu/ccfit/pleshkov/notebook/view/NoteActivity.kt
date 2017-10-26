@@ -1,27 +1,40 @@
 package ru.nsu.ccfit.pleshkov.notebook.view
 
-import android.app.DatePickerDialog
-import android.app.Dialog
+import android.app.*
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatDialogFragment
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.DatePicker
+import android.widget.TimePicker
 import kotlinx.android.synthetic.main.activity_note.*
 import kotlinx.android.synthetic.main.content_note.*
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.experimental.withTimeoutOrNull
 import ru.nsu.ccfit.pleshkov.notebook.R
 import ru.nsu.ccfit.pleshkov.notebook.model.NoteStatus
 import ru.nsu.ccfit.pleshkov.notebook.presenter.niceFormattedTime
+import ru.nsu.ccfit.pleshkov.notebook.services.DeadlineReceiver
 import java.util.*
 
-abstract class NoteActivity : BaseDatabaseActivity(), DatePickerDialog.OnDateSetListener {
+const val NOTIFICATION_ONCE = 1
+const val NOTE_ID_KEY = "NOTE_ID"
+const val NEXT_STATUS_KEY = "NEXT_STATUS"
+
+abstract class NoteActivity :
+        BaseDatabaseActivity(),
+        DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener {
 
     override val layoutId: Int
         get() = R.layout.activity_note
 
-    private var timeToDo: Long = -1L
+    protected var id: Int = -1
+    private var deadline: Long = -1L
     var status: NoteStatus = NoteStatus.UNKNOWN
     var changedByUser: Boolean = false
 
@@ -33,10 +46,7 @@ abstract class NoteActivity : BaseDatabaseActivity(), DatePickerDialog.OnDateSet
 
         newNoteToolbar.setNavigationOnClickListener { onBackPressed() }
 
-        changeDeadline.setOnClickListener {
-            val deadlineDatePickerDialog = DeadlineDatePickerDialog(this, this)
-            deadlineDatePickerDialog.show()
-        }
+        changeDeadline.setOnClickListener { DeadlineDatePickerDialog(this, this).show() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -50,7 +60,13 @@ abstract class NoteActivity : BaseDatabaseActivity(), DatePickerDialog.OnDateSet
             val title = noteTitle.text.toString()
             val text = noteText.text.toString()
 
-            writeChangesToDatabase(title, text, timeToDo)
+            val dbJob = writeChangesToDatabase(title, text, deadline)
+
+            val id = runBlocking { withTimeoutOrNull(500L) { dbJob.await() } }
+
+            if(!changedByUser && id != null && (status.timeToNext != 0L)) {
+                setNotification(id)
+            }
 
             val intent = MainActivity.newIntent(this)
             startActivityAnimated(intent)
@@ -63,11 +79,33 @@ abstract class NoteActivity : BaseDatabaseActivity(), DatePickerDialog.OnDateSet
         else -> super.onOptionsItemSelected(item)
     }
 
-    protected abstract fun writeChangesToDatabase(title: String, text: String, timeToDo: Long)
+    private fun setNotification(id: Int) {
+        val notifyIntent = DeadlineReceiver.newIntent(this)
+        notifyIntent.putExtra(NOTE_ID_KEY, id)
+        notifyIntent.putExtra(NEXT_STATUS_KEY, status.nextCode)
+        val pending = pendingNotifyIntent(notifyIntent)
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + status.timeToNext, pending)
+    }
+
+    private fun pendingNotifyIntent(notifyIntent: Intent) =
+            PendingIntent.getBroadcast(this, NOTIFICATION_ONCE, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+    protected abstract fun writeChangesToDatabase(title: String, text: String, timeToDo: Long) : Deferred<Int>
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, day: Int) {
-        timeToDo = Calendar.getInstance().also { c -> c.set(year, month, day) }.timeInMillis
-        noteDeadline.text = "Deadline is ${niceFormattedTime(timeToDo)}"
+        deadline = Calendar.getInstance().also { c ->
+            c.set(year, month, day, 0, 0)
+        }.timeInMillis
+        DeadlineTimePickerDialog(this, this).show()
+    }
+
+    override fun onTimeSet(view: TimePicker?, hour: Int, minute: Int) {
+        deadline += (hour * 3600 + minute * 60) * 1000
+        status = NoteStatus.getByTimeToDo(deadline - System.currentTimeMillis())
+        noteDeadline.text = "Deadline is ${niceFormattedTime(deadline)}"
+        noteStatus.text = status.toString()
+        noteStatus.setTextColor(status.color)
     }
 }
 
@@ -108,3 +146,14 @@ class DeadlineDatePickerDialog(
         date.get(Calendar.DATE)
 )
 
+class DeadlineTimePickerDialog(
+        context: Context,
+        listener: TimePickerDialog.OnTimeSetListener,
+        time: Calendar = Calendar.getInstance().also { c -> c.add(Calendar.HOUR, 1) }
+) : TimePickerDialog(
+        context,
+        listener,
+        time.get(Calendar.HOUR_OF_DAY),
+        time.get(Calendar.MINUTE),
+        true
+)

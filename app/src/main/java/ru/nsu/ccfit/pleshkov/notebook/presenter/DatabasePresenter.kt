@@ -27,7 +27,7 @@ class DatabasePresenter : JobHolder {
     }
 
     fun changeToCancelled(noteId: Int) = jobAsync {
-        writableDb.changeToCancelled(noteId)
+        writableDb.changeStatus(noteId)
     }
 
     fun getNote(noteId: Int) = jobAsync {
@@ -40,7 +40,10 @@ class DatabasePresenter : JobHolder {
             timeToDo: Long? = null,
             status: NoteStatus? = null,
             changedByUser: Boolean? = null
-    ) = jobAsync { writableDb.insertNote(title, text, timeToDo, status, changedByUser) }
+    ) = jobAsync {
+        val rowid = writableDb.insertNote(title, text, timeToDo, status, changedByUser)
+        readableDb.getRow(rowid.toInt()).id
+    }
 
     fun editNote(
             id: Int,

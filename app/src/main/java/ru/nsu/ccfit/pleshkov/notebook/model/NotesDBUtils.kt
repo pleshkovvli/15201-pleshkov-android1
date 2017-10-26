@@ -29,10 +29,10 @@ suspend fun SQLiteDatabase.getAllNotes(): ArrayList<Note> {
     return notesList
 }
 
-suspend fun SQLiteDatabase.changeToCancelled(noteId: Int) {
+suspend fun SQLiteDatabase.changeStatus(noteId: Int, status: NoteStatus = NoteStatus.CANCELLED) {
     val selection = "${NotesDBContract._ID} = ?"
     val values = ContentValues()
-    values.put(NotesDBContract.COLUMN_NAME_STATUS, NoteStatus.CANCELLED.code)
+    values.put(NotesDBContract.COLUMN_NAME_STATUS, status.code)
     values.put(NotesDBContract.COLUMN_NAME_SET_BY_USER, 1)
 
     this.update(NotesDBContract.TABLE_NAME, values, selection, arrayOf("$noteId"))
@@ -48,7 +48,7 @@ suspend fun SQLiteDatabase.editNote(
         text: String? = null,
         timeToDo: Long? = null,
         status: NoteStatus? = null,
-        changedByUser: Boolean? = null) {
+        changedByUser: Boolean? = null) : Int {
     val values = contentValues(
             title,
             text,
@@ -59,9 +59,21 @@ suspend fun SQLiteDatabase.editNote(
     )
     val selection = "${NotesDBContract._ID} = ?"
     this.update(NotesDBContract.TABLE_NAME, values, selection, arrayOf("$id"))
+    return id
 }
 
-suspend fun SQLiteDatabase.getNote(noteId: Int): Note {
+
+private enum class idType(val selection: String) {
+    ROWID("ROWID = ?"),
+    BASE_ID("${NotesDBContract._ID} = ?")
+}
+
+suspend fun SQLiteDatabase.getRow(rowId: Int) = selectNote(idType.ROWID, arrayOf("$rowId"))
+
+suspend fun SQLiteDatabase.getNote(noteId: Int) = selectNote(idType.BASE_ID, arrayOf("$noteId"))
+
+
+private suspend fun SQLiteDatabase.selectNote(type: idType, values: Array<String>): Note {
     val projection = arrayOf(
             NotesDBContract._ID,
             NotesDBContract.COLUMN_NAME_TITLE,
@@ -72,12 +84,11 @@ suspend fun SQLiteDatabase.getNote(noteId: Int): Note {
             NotesDBContract.COLUMN_NAME_STATUS,
             NotesDBContract.COLUMN_NAME_SET_BY_USER
     )
-    val selection = "${NotesDBContract._ID} = ?"
     val cursor = this.query(
             NotesDBContract.TABLE_NAME,
             projection,
-            selection,
-            arrayOf("$noteId"),
+            type.selection,
+            values,
             null,
             null,
             null
@@ -95,7 +106,7 @@ suspend fun SQLiteDatabase.insertNote(
         timeToDo: Long? = null,
         status: NoteStatus? = null,
         changedByUser: Boolean? = null
-) {
+) : Long {
     val currentMoment = Calendar.getInstance().timeInMillis
     val values = contentValues(
             title,
@@ -106,7 +117,7 @@ suspend fun SQLiteDatabase.insertNote(
             changedByUser
     )
 
-    this.insert(NotesDBContract.TABLE_NAME, null, values)
+    return this.insert(NotesDBContract.TABLE_NAME, null, values)
 }
 
 fun contentValues(
