@@ -19,5 +19,4 @@
         android:icon="@drawable/ic_save_white_24dp"
         android:title="@string/action_settings"
         app:showAsAction="always" />
-
 </menu>

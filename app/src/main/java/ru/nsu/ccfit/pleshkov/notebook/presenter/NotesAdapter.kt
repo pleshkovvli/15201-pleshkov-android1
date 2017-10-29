@@ -3,6 +3,7 @@ package ru.nsu.ccfit.pleshkov.notebook.presenter
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,14 +11,17 @@ import kotlinx.android.synthetic.main.note_item.view.*
 import ru.nsu.ccfit.pleshkov.notebook.R
 import ru.nsu.ccfit.pleshkov.notebook.model.Note
 import ru.nsu.ccfit.pleshkov.notebook.model.NoteStatus
+import ru.nsu.ccfit.pleshkov.notebook.model.copyAsCancelledByUser
 import java.text.SimpleDateFormat
 
 class NotesAdapter(
-        private val listener: (Note) -> Unit = {}
+        private val checkDone: (Note) -> Unit,
+        private val checkUndone: (Note) -> NoteStatus,
+        private val onClickListener: (Note) -> Unit
 ) : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
 
-    private val notes: ArrayList<Note> = ArrayList<Note>()
-    private val notesSaved: ArrayList<Note> = ArrayList<Note>()
+    private val notes: ArrayList<Note> = ArrayList()
+    private val notesSaved: ArrayList<Note> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = parent.inflate(R.layout.note_item)
@@ -27,7 +31,7 @@ class NotesAdapter(
     override fun getItemCount(): Int = notes.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(notes[position], listener)
+        holder.bind(notes[position], checkDone, checkUndone, onClickListener)
     }
 
     fun setNotes(newNotes: Collection<Note>) {
@@ -36,33 +40,35 @@ class NotesAdapter(
         notesSaved.addAll(newNotes)
     }
 
+    fun renewItem(id: Int, newNote: Note) {
+        Log.d("RENEW", "Changed!")
+        for(j in notesSaved.indices) {
+            if(notesSaved[j].id == id) {
+                notesSaved[j] = newNote
+                for(i in notes.indices) {
+                    if(notes[i].id == id) {
+                        notes[i] = newNote
+                        Log.d("RENEW", "Changed!")
+                        notifyItemChanged(i)
+                    }
+                }
+            }
+        }
+    }
+
     fun showFiltered(query: String) {
         val filteredNotes = ArrayList<Note>()
 
         for (note in notesSaved) {
             val text = note.text
             val title = note.title
-            if (text.contains(query, true) || title.contains(query, true)) {
+            if (text.contains(query, true)
+                    || title.contains(query, true)) {
                 filteredNotes.add(note)
             }
         }
 
         showNotes(filteredNotes)
-    }
-
-    private fun showNotes(newNotes: Collection<Note>) {
-        notes.clear()
-        notes.addAll(newNotes)
-
-        notes.sortWith(Comparator { a, b ->
-            when {
-                a.timeCreated < b.timeCreated -> -1
-                a.timeCreated == b.timeCreated -> 0
-                else -> 1
-            }
-        })
-
-        notifyDataSetChanged()
     }
 
     fun moveElementToBottom(position: Int, change: Note.() -> Note) {
@@ -80,7 +86,7 @@ class NotesAdapter(
 
     fun removeItem(position: Int) {
         if (position < 0) {
-            return  //TODO ?
+            return
         }
         val note = notes.removeAt(position)
         notesSaved.remove(note)
@@ -93,13 +99,39 @@ class NotesAdapter(
         notifyDataSetChanged()
     }
 
+    private fun showNotes(newNotes: Collection<Note>) {
+        notes.clear()
+        notes.addAll(newNotes)
+        //TODO: Comparators Factory
+        notes.sortWith(Comparator { a, b ->
+            when {
+                a.timeCreated < b.timeCreated -> -1
+                a.timeCreated == b.timeCreated -> 0
+                else -> 1
+            }
+        })
+
+        notifyDataSetChanged()
+    }
+
     private fun ViewGroup.inflate(layoutRes: Int): View =
-            LayoutInflater.from(context).inflate(layoutRes, this, false)
+            LayoutInflater
+                    .from(context)
+                    .inflate(layoutRes, this, false)
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(note: Note, listener: (Note) -> Unit) = with(itemView) {
+        fun bind(
+                note: Note,
+                checkDone: (Note) -> Unit,
+                checkUndone: (Note) -> NoteStatus,
+                onClickListener: (Note) -> Unit
+        ) = with(itemView) {
             noteTitle.text = note.title
             noteText.text = note.text
+
+            if(note.status == NoteStatus.DONE) {
+                isDone.isChecked = true
+            }
 
             val creationDateText = niceFormattedTime(note.timeCreated)
             noteCreationDate.text = "$creationDateText"
@@ -110,9 +142,23 @@ class NotesAdapter(
                 "Deadline is $deadlineDateText"
             } else "No deadline"
 
-            noteStatus.text = note.status.toString()
-            noteStatus.setTextColor(note.status.color)
-            setOnClickListener { listener(note) }
+            isDone.setOnCheckedChangeListener { _, checked ->
+                    if(checked) {
+                        checkDone(note)
+                        val done = NoteStatus.DONE
+                        noteStatus.text = done.toString()
+                        noteStatus.setTextColor(noteStatus.getColor(done))
+                    } else {
+                        val status = checkUndone(note)
+                        noteStatus.text = status.toString()
+                        noteStatus.setTextColor(noteStatus.getColor(status))
+                    }
+            }
+
+            val status = note.status
+            noteStatus.text = status.toString()
+            noteStatus.setTextColor(getColor(status))
+            setOnClickListener { onClickListener(note) }
         }
     }
 }
@@ -135,7 +181,17 @@ class NoteDeleteCallback(
             recyclerView: RecyclerView?,
             viewHolder: RecyclerView.ViewHolder?,
             target: RecyclerView.ViewHolder?
-    ): Boolean = false
+    ) = false
+
+    override fun getSwipeDirs(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder): Int {
+        val note = notesAdapter.noteOnPosition(viewHolder.adapterPosition)
+        if(note.status == NoteStatus.CANCELLED) {
+            return 0
+        }
+        return super.getSwipeDirs(recyclerView, viewHolder)
+    }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
         val position = viewHolder?.adapterPosition ?: return
@@ -144,8 +200,7 @@ class NoteDeleteCallback(
             return
         }
 
-        dbPresenter.changeToCancelled(note.id)
-
-        notesAdapter.moveElementToBottom(position) { this.makeCancelledByUser() }
+        dbPresenter.changeStatus(note.id, NoteStatus.CANCELLED)
+        notesAdapter.moveElementToBottom(position) { this.copyAsCancelledByUser() }
     }
 }

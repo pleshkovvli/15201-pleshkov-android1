@@ -3,4 +3,17 @@
     <color name="colorPrimary">#22BB33</color>
     <color name="colorPrimaryDark">#11AA22</color>
     <color name="colorAccent">#EEEE11</color>
+
+    <color name="urgent_color">#CC2233</color>
+    <color name="primary_color">#BB6677</color>
+    <color name="usual_color">#EEBB11</color>
+    <color name="someday_color">#4455DD</color>
+    <color name="unnecessary_color">#55DD66</color>
+    <color name="failed_color">#FF1111</color>
+    <color name="done_color">#DD11FF11</color>
+    <color name="cancelled_color">#99553355</color>
+    <color name="unknown_color">#66222211</color>
+
+    <color name="error_color">#EEFF0011</color>
+    <color name="ok_color">#EE000000</color>
 </resources>

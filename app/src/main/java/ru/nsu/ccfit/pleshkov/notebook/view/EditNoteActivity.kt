@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import kotlinx.android.synthetic.main.content_note.*
-import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.android.UI
 import ru.nsu.ccfit.pleshkov.notebook.model.Note
+import ru.nsu.ccfit.pleshkov.notebook.presenter.getColor
 import ru.nsu.ccfit.pleshkov.notebook.presenter.niceFormattedTime
 
 class EditNoteActivity : NoteActivity() {
@@ -38,13 +38,12 @@ class EditNoteActivity : NoteActivity() {
 
             status = oldNote.status
             noteStatus.text = status.toString()
-            noteStatus.setTextColor(status.color)
+            noteStatus.setTextColor(noteStatus.getColor(status))
             changedByUser = oldNote.statusSetByUser
         }
 
     }
 
-    override fun writeChangesToDatabase(title: String, text: String, timeToDo: Long) : Deferred<Int> {
-        return dbPresenter.editNote(oldNote.id, title, text, timeToDo, status, changedByUser)
-    }
+    override fun writeChangesToDatabase(title: String, text: String, timeToDo: Long) =
+        dbPresenter.editNote(oldNote.id, title, text, timeToDo, status, changedByUser)
 }

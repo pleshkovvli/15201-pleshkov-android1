@@ -22,18 +22,6 @@ class DatabasePresenter : JobHolder {
         readableDb = dbHelper.readableDatabase
     }
 
-    fun getAllNotes() = jobAsync {
-        readableDb.getAllNotes()
-    }
-
-    fun changeToCancelled(noteId: Int) = jobAsync {
-        writableDb.changeStatus(noteId)
-    }
-
-    fun getNote(noteId: Int) = jobAsync {
-        readableDb.getNote(noteId)
-    }
-
     fun addNote(
             title: String? = null,
             text: String? = null,
@@ -41,8 +29,8 @@ class DatabasePresenter : JobHolder {
             status: NoteStatus? = null,
             changedByUser: Boolean? = null
     ) = jobAsync {
-        val rowid = writableDb.insertNote(title, text, timeToDo, status, changedByUser)
-        readableDb.getRow(rowid.toInt()).id
+        val rowId = writableDb.insertNote(title, text, timeToDo, status, changedByUser)
+        readableDb.selectRow(rowId.toInt()).id
     }
 
     fun editNote(
@@ -54,6 +42,18 @@ class DatabasePresenter : JobHolder {
             changedByUser: Boolean
     ) = jobAsync {
         writableDb.editNote(id, title, text, timeToDo, status, changedByUser)
+    }
+
+    fun changeStatus(noteId: Int, status: NoteStatus) = jobAsync {
+        writableDb.changeStatus(noteId, status)
+    }
+
+    fun getAllNotes() = jobAsync {
+        readableDb.selectAllNotes()
+    }
+
+    fun getNote(noteId: Int) = jobAsync {
+        readableDb.selectNote(noteId)
     }
 
     fun deleteAllNotes() = jobAsync {

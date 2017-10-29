@@ -6,6 +6,7 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.content_note.*
 import ru.nsu.ccfit.pleshkov.notebook.R
 import ru.nsu.ccfit.pleshkov.notebook.model.NoteStatus
+import ru.nsu.ccfit.pleshkov.notebook.presenter.getColor
 
 class NewNoteActivity : NoteActivity() {
 
@@ -13,7 +14,7 @@ class NewNoteActivity : NoteActivity() {
         super.onCreate(savedInstanceState)
 
         noteStatus.text = NoteStatus.UNKNOWN.toString()
-        noteStatus.setTextColor(NoteStatus.UNKNOWN.color)
+        noteStatus.setTextColor(noteStatus.getColor(NoteStatus.UNKNOWN))
         noteDeadline.text = resources.getString(R.string.no_deadline)
     }
 

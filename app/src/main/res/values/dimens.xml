@@ -1,14 +1,22 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="header_margin">4sp</dimen>
-    <dimen name="new_header_padding">8sp</dimen>
+    <dimen name="title_margin">4sp</dimen>
+    <dimen name="time_margin">8sp</dimen>
+    <dimen name="settings_item_margin">16sp</dimen>
     <dimen name="content_margin">4sp</dimen>
-    <dimen name="header_text_size">24sp</dimen>
-    <dimen name="header_size">32sp</dimen>
+
+    <dimen name="new_title_padding">8sp</dimen>
+
+    <dimen name="title_text_size">24sp</dimen>
     <dimen name="content_text_size">16sp</dimen>
-    <dimen name="content_size">60sp</dimen>
     <dimen name="new_header_text_size">24sp</dimen>
     <dimen name="new_content_text_size">20sp</dimen>
-    <dimen name="date_width">48sp</dimen>
+    <dimen name="time_text_size">32sp</dimen>
+
+    <dimen name="title_size">32sp</dimen>
+    <dimen name="content_size">60sp</dimen>
+
+    <dimen name="time_min_width">64sp</dimen>
     <dimen name="title_width">256sp</dimen>
+    <dimen name="date_width">48sp</dimen>
 </resources>

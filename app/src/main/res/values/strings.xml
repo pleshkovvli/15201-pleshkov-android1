@@ -1,27 +1,33 @@
 <resources>
     <string name="app_name">Notebook</string>
+
     <string name="action_settings">Settings</string>
     <string name="menu_search">Search</string>
     <string name="menu_change_status">Change status</string>
+
     <string name="title_hint">Title</string>
+
     <string name="delete_all_menu">Delete all notes</string>
     <string name="delete_all_title">Delete all?</string>
     <string name="delete_all_message">All your notes will be deleted!</string>
     <string name="delete_all_ok">Wipe it</string>
     <string name="delete_all_cancel">Not now</string>
+
     <string name="change">Change</string>
-    <string name="cancel">Change</string>
+    <string name="cancel">Cancel</string>
+
     <string name="no_deadline">No deadline</string>
 
-    <string-array name="status_names">
-        <item>URGENT</item>
-        <item>PRIMARY</item>
-        <item>USUAL</item>
-        <item>SOMEDAY</item>
-        <item>UNNECESSARY</item>
-        <item>DONE</item>
-        <item>FAILED</item>
-        <item>CANCELLED</item>
-        <item>UNKNOWN</item>
-    </string-array>
+    <string name="hours">Hours</string>
+    <string name="days">Days</string>
+    <string name="minutes">Minutes</string>
+    <string name="time_delimiter">:</string>
+
+    <string name="preferences_key">ru.nsu.ccfit.pleshkov.notebook.PREFERENCES</string>
+    <string name="urgent_key">URGENT</string>
+    <string name="primary_key">PRIMARY</string>
+    <string name="usual_key">USUAL</string>
+    <string name="someday_key">SOMEDAY</string>
+
+    <string name="is_done_text">is done?</string>
 </resources>

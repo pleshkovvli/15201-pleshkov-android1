@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:layout_margin="@dimen/settings_item_margin"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/statusTypeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/time_min_width"
+        android:textSize="@dimen/title_text_size" />
+
+    <EditText
+        android:id="@+id/days"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/statusTypeText"
+        android:layout_marginEnd="@dimen/time_margin"
+        android:layout_marginLeft="@dimen/time_margin"
+        android:layout_marginRight="@dimen/time_margin"
+        android:layout_marginStart="@dimen/time_margin"
+        android:inputType="time"
+        android:minWidth="@dimen/time_min_width"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/time_text_size" />
+
+    <TextView
+        android:id="@+id/firstDelimiter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/statusTypeText"
+        android:layout_toEndOf="@id/days"
+        android:layout_toRightOf="@id/days"
+        android:text="@string/time_delimiter"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="@dimen/time_text_size" />
+
+
+    <EditText
+        android:id="@+id/hours"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/statusTypeText"
+        android:layout_marginEnd="@dimen/time_margin"
+        android:layout_marginLeft="@dimen/time_margin"
+        android:layout_marginRight="@dimen/time_margin"
+        android:layout_marginStart="@dimen/time_margin"
+        android:layout_toEndOf="@id/firstDelimiter"
+        android:layout_toRightOf="@id/firstDelimiter"
+        android:inputType="time"
+        android:minWidth="@dimen/time_min_width"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/time_text_size" />
+
+    <TextView
+        android:id="@+id/secondDelimiter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/statusTypeText"
+        android:layout_toEndOf="@id/hours"
+        android:layout_toRightOf="@id/hours"
+        android:textStyle="bold"
+        android:text="@string/time_delimiter"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/time_text_size" />
+
+    <EditText
+        android:id="@+id/minutes"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/statusTypeText"
+        android:layout_marginEnd="@dimen/time_margin"
+        android:layout_marginLeft="@dimen/time_margin"
+        android:layout_marginRight="@dimen/time_margin"
+        android:layout_marginStart="@dimen/time_margin"
+        android:layout_toEndOf="@id/secondDelimiter"
+        android:layout_toRightOf="@id/secondDelimiter"
+        android:inputType="time"
+        android:minWidth="@dimen/time_min_width"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/time_text_size" />
+
+
+    <TextView
+        android:id="@+id/days_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/days"
+        android:layout_marginEnd="@dimen/time_margin"
+        android:layout_marginLeft="@dimen/time_margin"
+        android:layout_marginRight="@dimen/time_margin"
+        android:layout_marginStart="@dimen/time_margin"
+        android:gravity="center"
+        android:minWidth="@dimen/time_min_width"
+        android:text="@string/days"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/title_text_size" />
+
+    <TextView
+        android:id="@+id/hours_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hours"
+        android:layout_toEndOf="@id/firstDelimiter"
+        android:layout_toRightOf="@id/firstDelimiter"
+        android:text="@string/hours"
+
+        android:layout_marginEnd="@dimen/time_margin"
+        android:layout_marginLeft="@dimen/time_margin"
+        android:layout_marginRight="@dimen/time_margin"
+        android:layout_marginStart="@dimen/time_margin"
+        android:gravity="center"
+        android:minWidth="@dimen/time_min_width"
+        android:textSize="@dimen/title_text_size" />
+
+    <TextView
+        android:id="@+id/minutes_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/minutes"
+        android:layout_toEndOf="@id/secondDelimiter"
+        android:layout_toRightOf="@id/secondDelimiter"
+        android:text="@string/minutes"
+
+        android:layout_marginEnd="@dimen/time_margin"
+        android:layout_marginLeft="@dimen/time_margin"
+        android:layout_marginRight="@dimen/time_margin"
+        android:layout_marginStart="@dimen/time_margin"
+        android:gravity="center"
+        android:minWidth="@dimen/time_min_width"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="@dimen/title_text_size" />
+
+</RelativeLayout>

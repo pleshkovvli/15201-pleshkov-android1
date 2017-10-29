@@ -17,6 +17,17 @@ object NotesDBContract {
 
     const val SELECT_ALL = "SELECT * FROM $TABLE_NAME"
     const val DELETE_ALL = "DELETE FROM $TABLE_NAME"
+
+    val PROJECTION_ALL = arrayOf(
+            NotesDBContract._ID,
+            NotesDBContract.COLUMN_NAME_TITLE,
+            NotesDBContract.COLUMN_NAME_TEXT,
+            NotesDBContract.COLUMN_NAME_TIME_CREATED,
+            NotesDBContract.COLUMN_NAME_TIME_UPDATED,
+            NotesDBContract.COLUMN_NAME_TIME_TO_DO,
+            NotesDBContract.COLUMN_NAME_STATUS,
+            NotesDBContract.COLUMN_NAME_SET_BY_USER
+    )
 }
 
 interface AllNotesDeleter {
